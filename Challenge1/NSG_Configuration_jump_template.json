@@ -1,0 +1,162 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string"
+    },
+    "nsgName": {
+      "type": "string"
+    },
+    "port": {
+      "type": "array"
+    },
+    "destinationCIDRs": {
+      "type": "array"
+    },
+    "completeCIDRs": {
+      "type": "array"
+    },
+    "sourceAddressPrefixes": { 
+      "type": "array"
+    },
+    "jumpAddressPrefixes": { 
+      "type": "array"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "name": "[parameters('nsgName')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2019-04-01",
+      "location": "[parameters('location')]",
+      "tags": {
+        "rule_version": "1.0.3"
+      },
+      "properties": {
+        "securityRules": [
+          {
+            "name": "nsr-deny-unencrypted-http",
+            "properties": {
+              "description": "Deny all unencrypted HTTP",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "destinationAddressPrefixes": "[parameters('destinationCIDRs')]",
+              "priority": 100,
+              "access": "Deny",
+              "direction": "Inbound",
+              "sourceAddressPrefix": "*"
+            }
+          },
+          {
+            "name": "nsr-deny-unencrypted-telnet",
+            "properties": {
+              "description": "Deny all unencrypted telnet",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "23",
+              "destinationAddressPrefixes": "[parameters('destinationCIDRs')]",
+              "priority": 101,
+              "access": "Deny",
+              "direction": "Inbound",
+
+              "sourceAddressPrefix": "*"
+            }
+          },
+          {
+            "name": "nsr-deny-unencrypted-smtp",
+            "properties": {
+              "description": "Deny all unencrypted smtp",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "25",
+              "destinationAddressPrefixes": "[parameters('destinationCIDRs')]",
+              "priority": 102,
+              "access": "Deny",
+              "direction": "Inbound",
+
+              "sourceAddressPrefix": "*"
+            }
+          },
+          {
+            "name": "nsr-deny-unencrypted-ldap",
+            "properties": {
+              "description": "Deny all unencrypted LDAP",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "389",
+              "destinationAddressPrefixes": "[parameters('destinationCIDRs')]",
+              "priority": 103,
+              "access": "Deny",
+              "direction": "Inbound",
+
+              "sourceAddressPrefix": "*"
+            }
+          },
+          {
+              "name": "nsr-allow-rdp",
+              "properties": {
+                "description": "Allow RDP when already inside",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "3389",
+                "destinationAddressPrefixes": "[parameters('destinationCIDRs')]",
+                "priority": 203,
+                "access": "Allow",
+                "direction": "Inbound",
+                "sourceAddressPrefix": "[parameters('jumpAddressPrefixes')]"
+              }
+          },
+          {
+              "name": "AllowVnetInBound_Custom",
+              "properties": {
+                "description": "AllowVnetInBound_Custom",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "destinationAddressPrefixes": "[parameters('destinationCIDRs')]",
+                "priority": 4094,
+                "access": "Allow",
+                "direction": "Inbound",
+  
+                "sourceAddressPrefixes": "[parameters('completeCIDRs')]"
+              }
+          },
+          {
+              "name": "AllowAzureLoadBalancerInBound_Custom",
+              "properties": {
+                "description": "AllowAzureLoadBalancerInBound_Custom",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "destinationAddressPrefixes": "[parameters('destinationCIDRs')]",
+                "priority": 4095,
+                "access": "Allow",
+                "direction": "Inbound",
+  
+                "sourceAddressPrefix": "AzureLoadBalancer"
+              }
+          },
+          {
+              "name": "DefaultDenyAll",
+              "properties": {
+                "description": "DefaultDenyAll",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "destinationAddressPrefix": "*",
+                "priority": 4096,
+                "access": "Deny",
+                "direction": "Inbound",
+  
+                "sourceAddressPrefix": "*"
+              }
+          }
+        ]
+      }
+    }
+  ]
+}
