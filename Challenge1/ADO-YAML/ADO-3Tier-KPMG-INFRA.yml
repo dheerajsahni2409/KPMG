@@ -142,7 +142,7 @@ stages:
           # NSG Deployment JUMP 
           - task: AzureResourceManagerTemplateDeployment@3
             displayName: 'NSG Deployment JUMP'
-            enabled: true
+            enabled: false
             inputs:
               action: 'Create Or Update Resource Group'
               deploymentScope: 'Resource Group'
@@ -151,9 +151,10 @@ stages:
               resourceGroupName: '$(vnet_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: Challenge1/NSG_Configuration_template.json
+              csmFile: Challenge1/NSG_Configuration_jump_template.json
               csmParametersFile: Challenge1/Infrastructure/NSG_jump_parameter.json
               deploymentMode: 'Incremental'
+            
 
   - stage: az_web_rg
     displayName: web RG
@@ -361,7 +362,7 @@ stages:
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
               csmFile: Challenge1/windows_vm_template.json
-              csmParametersFile: Challenge1/Infrastructure/app2_parameter.json
+              csmParametersFile: Challenge1/Infrastructure/app1_parameter.json
               deploymentMode: 'Incremental'
 
           # app VM 02
@@ -380,6 +381,59 @@ stages:
               csmParametersFile: Challenge1/Infrastructure/app2_parameter.json
               deploymentMode: 'Incremental'
 
+  - stage: az_jump_vm
+    displayName: jump VM
+    condition: succeeded()
+    dependsOn: 
+      - init
+      - az_vnet
+      
+    jobs:
+
+      - job: az_jump_rg
+        displayName: jump RG
+        condition: succeeded()
+
+        steps:
+
+          # app RG
+          - task: AzureResourceManagerTemplateDeployment@3
+            displayName: 'jump RG'
+            enabled: true
+            inputs:
+              deploymentScope: 'Subscription'
+              azureResourceManagerConnection: $(az-connection)
+              subscriptionId: $(az-subscription)
+              location: $(az-location)
+              templateLocation: 'Linked artifact'
+              csmFile: Challenge1/resource_group_template.json
+              csmParametersFile: Challenge1/Infrastructure/rg_jump_parameter.json
+              deploymentMode: 'Incremental'
+              
+      - job: az_jump_vm
+        displayName: jump VM
+        condition: succeeded()
+        dependsOn:
+        - az_jump_rg
+
+        steps:
+
+            # Jump VM
+            - task: AzureResourceManagerTemplateDeployment@3
+              displayName: 'Jump VM '
+              enabled: true
+              inputs:
+                action: 'Create Or Update Resource Group'
+                deploymentScope: 'Resource Group'
+                azureResourceManagerConnection: $(az-connection)
+                subscriptionId: $(az-subscription)
+                resourceGroupName: '$(app_rg)'
+                location: '$(az-location)'
+                templateLocation: 'Linked artifact'
+                csmFile: Challenge1/windows_jumpvm_template.json
+                csmParametersFile: Challenge1/Infrastructure/jump_parameter.json
+                deploymentMode: 'Incremental'
+            
   - stage: az_lb_setup_web
     displayName: LB Setup for web
     condition: succeeded()
