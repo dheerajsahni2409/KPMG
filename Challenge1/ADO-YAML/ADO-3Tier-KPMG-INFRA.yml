@@ -39,16 +39,6 @@ stages:
 
         steps:
 
-          # Retrieve Artifacts from Gitlab
-          - task: DownloadGitHubRelease@0
-            displayName: 'Artifacts'
-            inputs:
-              connection: $(git-connection)
-              userRepository: $(git-repo)
-              defaultVersionType: 'latest'
-              CheckoutSubmodules: 'Recursive'
-              downloadPath: '$(System.ArtifactsDirectory)'
-
           # vnet RG
           - task: AzureResourceManagerTemplateDeployment@3
             displayName: 'vNET RG'
@@ -59,8 +49,8 @@ stages:
               subscriptionId: $(az-subscription)
               location: $(az-location)
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/resource_group_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/rg_vnet_parameter.json'
+              csmFile: Challenge1/resource_group_template.json
+              csmParametersFile: Challenge1/Infrastructure/rg_vnet_parameter.json
               deploymentMode: 'Incremental'
 
   - stage: az_vnet
@@ -77,15 +67,6 @@ stages:
       condition: succeeded()
 
       steps:
-          # Retrieve Artifacts from Gitlab
-          - task: DownloadGitHubRelease@0
-            displayName: 'Artifacts'
-            inputs:
-              connection: $(git-connection)
-              userRepository: $(git-repo)
-              defaultVersionType: 'latest'
-              CheckoutSubmodules: 'Recursive'
-              downloadPath: '$(System.ArtifactsDirectory)'
 
           # vnet Deployment
           - task: AzureResourceManagerTemplateDeployment@3
@@ -99,25 +80,17 @@ stages:
               resourceGroupName: '$(vnet_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/vNet_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/vNet_param.json'
+              csmFile: Challenge1/vNet_template.json
+              csmParametersFile: Challenge1/Infrastructure/vNet_param.json
               deploymentMode: 'Incremental'
 
     - job: az_vnet_NSG
       displayName: NSG
       condition: succeeded()
+      dependsOn:
+        - az_vnet
 
       steps:
-          # Retrieve Artifacts from Gitlab
-          - task: DownloadGitHubRelease@0
-            displayName: 'Artifacts'
-            inputs:
-              connection: $(git-connection)
-              userRepository: $(git-repo)
-              defaultVersionType: 'latest'
-              CheckoutSubmodules: 'Recursive'
-              downloadPath: '$(System.ArtifactsDirectory)'
-
           # NSG Deployment WEB 
           - task: AzureResourceManagerTemplateDeployment@3
             displayName: 'NSG Deployment WEB'
@@ -130,8 +103,8 @@ stages:
               resourceGroupName: '$(vnet_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/NSG_Configuration_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/NSG_web_parameter.json'
+              csmFile: Challenge1/NSG_Configuration_web_template.json
+              csmParametersFile: Challenge1/Infrastructure/NSG_web_parameter.json
               deploymentMode: 'Incremental'
 
           # NSG Deployment APP 
@@ -146,8 +119,8 @@ stages:
               resourceGroupName: '$(vnet_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/NSG_Configuration_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/NSG_app_parameter.json'
+              csmFile: Challenge1/NSG_Configuration_template.json
+              csmParametersFile: Challenge1/Infrastructure/NSG_app_parameter.json
               deploymentMode: 'Incremental'
 
           # NSG Deployment SQL 
@@ -162,8 +135,8 @@ stages:
               resourceGroupName: '$(vnet_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/NSG_Configuration_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/NSG_sql_parameter.json'
+              csmFile: Challenge1/NSG_Configuration_template.json
+              csmParametersFile: Challenge1/Infrastructure/NSG_sql_parameter.json
               deploymentMode: 'Incremental'
 
           # NSG Deployment JUMP 
@@ -178,8 +151,8 @@ stages:
               resourceGroupName: '$(vnet_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/NSG_Configuration_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/NSG_jump_parameter.json'
+              csmFile: Challenge1/NSG_Configuration_template.json
+              csmParametersFile: Challenge1/Infrastructure/NSG_jump_parameter.json
               deploymentMode: 'Incremental'
 
   - stage: az_web_rg
@@ -187,6 +160,7 @@ stages:
     condition: succeeded()
     dependsOn:
      - init
+     - az_vnet
 
     jobs:
       - job: az_web_rg
@@ -195,15 +169,6 @@ stages:
 
         steps:
 
-          # Retrieve Artifacts from Gitlab
-          - task: DownloadGitHubRelease@0
-            displayName: 'Artifacts'
-            inputs:
-              connection: $(git-connection)
-              userRepository: $(git-repo)
-              defaultVersionType: 'latest'
-              CheckoutSubmodules: 'Recursive'
-              downloadPath: '$(System.ArtifactsDirectory)'
           # web RG
           - task: AzureResourceManagerTemplateDeployment@3
             displayName: 'web RG'
@@ -214,8 +179,8 @@ stages:
               subscriptionId: $(az-subscription)
               location: $(az-location)
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/resource_group_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/rg_web_parameter.json'
+              csmFile: Challenge1/resource_group_template.json
+              csmParametersFile: Challenge1/Infrastructure/rg_web_parameter.json
               deploymentMode: 'Incremental'
 
   - stage: az_web_vm
@@ -232,15 +197,6 @@ stages:
       condition: succeeded()
 
       steps:
-          # Retrieve Artifacts from Gitlab
-          - task: DownloadGitHubRelease@0
-            displayName: 'Artifacts'
-            inputs:
-              connection: $(git-connection)
-              userRepository: $(git-repo)
-              defaultVersionType: 'latest'
-              CheckoutSubmodules: 'Recursive'
-              downloadPath: '$(System.ArtifactsDirectory)'
 
           # web VM 01
           - task: AzureResourceManagerTemplateDeployment@3
@@ -254,8 +210,8 @@ stages:
               resourceGroupName: '$(web_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/windows_vm_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/web1_parameter.json'
+              csmFile: Challenge1/windows_vm_template.json
+              csmParametersFile: Challenge1/Infrastructure/web1_parameter.json
               deploymentMode: 'Incremental'
 
           # web VM 02
@@ -270,8 +226,8 @@ stages:
               resourceGroupName: '$(web_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/windows_vm_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/web2_parameter.json'
+              csmFile: Challenge1/windows_vm_template.json
+              csmParametersFile: Challenge1/Infrastructure/web2_parameter.json
               deploymentMode: 'Incremental'
 
   - stage: az_sql_rg
@@ -279,6 +235,7 @@ stages:
     condition: succeeded()
     dependsOn:
      - init
+     - az_vnet
 
     jobs:
       - job: az_sql_rg
@@ -287,15 +244,6 @@ stages:
 
         steps:
 
-          # Retrieve Artifacts from Gitlab
-          - task: DownloadGitHubRelease@0
-            displayName: 'Artifacts'
-            inputs:
-              connection: $(git-connection)
-              userRepository: $(git-repo)
-              defaultVersionType: 'latest'
-              CheckoutSubmodules: 'Recursive'
-              downloadPath: '$(System.ArtifactsDirectory)'
           # sql RG
           - task: AzureResourceManagerTemplateDeployment@3
             displayName: 'sql RG'
@@ -306,8 +254,8 @@ stages:
               subscriptionId: $(az-subscription)
               location: $(az-location)
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/resource_group_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/rg_sql_parameter.json'
+              csmFile: Challenge1/resource_group_template.json
+              csmParametersFile: Challenge1/Infrastructure/rg_sql_parameter.json
               deploymentMode: 'Incremental'
 
   - stage: az_sql_vm
@@ -324,15 +272,6 @@ stages:
       condition: succeeded()
 
       steps:
-          # Retrieve Artifacts from Gitlab
-          - task: DownloadGitHubRelease@0
-            displayName: 'Artifacts'
-            inputs:
-              connection: $(git-connection)
-              userRepository: $(git-repo)
-              defaultVersionType: 'latest'
-              CheckoutSubmodules: 'Recursive'
-              downloadPath: '$(System.ArtifactsDirectory)'
 
           # sql VM 01
           - task: AzureResourceManagerTemplateDeployment@3
@@ -346,8 +285,8 @@ stages:
               resourceGroupName: '$(sql_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/windows_vm_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/sql1_parameter.json'
+              csmFile: Challenge1/windows_vm_template.json
+              csmParametersFile: Challenge1/Infrastructure/sql1_parameter.json
               deploymentMode: 'Incremental'
 
           # sql VM 02
@@ -362,8 +301,8 @@ stages:
               resourceGroupName: '$(sql_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/windows_vm_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/sql2_parameter.json'
+              csmFile: Challenge1/windows_vm_template.json
+              csmParametersFile: Challenge1/Infrastructure/sql2_parameter.json
               deploymentMode: 'Incremental'
 
   - stage: az_app_rg
@@ -371,6 +310,7 @@ stages:
     condition: succeeded()
     dependsOn:
      - init
+     - az_vnet
 
     jobs:
       - job: az_app_rg
@@ -379,15 +319,6 @@ stages:
 
         steps:
 
-          # Retrieve Artifacts from Gitlab
-          - task: DownloadGitHubRelease@0
-            displayName: 'Artifacts'
-            inputs:
-              connection: $(git-connection)
-              userRepository: $(git-repo)
-              defaultVersionType: 'latest'
-              CheckoutSubmodules: 'Recursive'
-              downloadPath: '$(System.ArtifactsDirectory)'
           # app RG
           - task: AzureResourceManagerTemplateDeployment@3
             displayName: 'app RG'
@@ -398,8 +329,8 @@ stages:
               subscriptionId: $(az-subscription)
               location: $(az-location)
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/resource_group_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/rg_web_parameter.json'
+              csmFile: Challenge1/resource_group_template.json
+              csmParametersFile: Challenge1/Infrastructure/rg_web_parameter.json
               deploymentMode: 'Incremental'
 
   - stage: az_app_vm
@@ -416,15 +347,6 @@ stages:
       condition: succeeded()
 
       steps:
-          # Retrieve Artifacts from Gitlab
-          - task: DownloadGitHubRelease@0
-            displayName: 'Artifacts'
-            inputs:
-              connection: $(git-connection)
-              userRepository: $(git-repo)
-              defaultVersionType: 'latest'
-              CheckoutSubmodules: 'Recursive'
-              downloadPath: '$(System.ArtifactsDirectory)'
 
           # app VM 01
           - task: AzureResourceManagerTemplateDeployment@3
@@ -438,8 +360,8 @@ stages:
               resourceGroupName: '$(app_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/windows_vm_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/app2_parameter.json'
+              csmFile: Challenge1/windows_vm_template.json
+              csmParametersFile: Challenge1/Infrastructure/app2_parameter.json
               deploymentMode: 'Incremental'
 
           # app VM 02
@@ -454,8 +376,8 @@ stages:
               resourceGroupName: '$(app_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/windows_vm_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/app2_parameter.json'
+              csmFile: Challenge1/windows_vm_template.json
+              csmParametersFile: Challenge1/Infrastructure/app2_parameter.json
               deploymentMode: 'Incremental'
 
   - stage: az_lb_setup_web
@@ -472,15 +394,6 @@ stages:
       condition: succeeded()
 
       steps:
-          # Retrieve Artifacts from Gitlab
-          - task: DownloadGitHubRelease@0
-            displayName: 'Artifacts'
-            inputs:
-              connection: $(git-connection)
-              userRepository: $(git-repo)
-              defaultVersionType: 'latest'
-              CheckoutSubmodules: 'Recursive'
-              downloadPath: '$(System.ArtifactsDirectory)'
 
           # LB Setup
           - task: AzureResourceManagerTemplateDeployment@3
@@ -494,6 +407,6 @@ stages:
               resourceGroupName: '$(web_rg)'
               location: '$(az-location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.ArtifactsDirectory)/Challenge1/LB_web_template.json'
-              csmParametersFile: '$(System.ArtifactsDirectory)/Challenge1/Infrastructure/LB_web_params.json'
+              csmFile: Challenge1/LB_web_template.json
+              csmParametersFile: Challenge1/Infrastructure/LB_web_params.json
               deploymentMode: 'Incremental'

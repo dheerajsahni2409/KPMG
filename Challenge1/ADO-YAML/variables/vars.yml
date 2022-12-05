@@ -1,11 +1,11 @@
 variables:
   git-connection: 'github.com_dheerajsahni2409'
-  git-repo: 'KPMG'
-  git-branch: 'main'
+  git-repo: 'dheerajsahni2409/KPMG'
   az-connection: 'KPMG_SC'
   az-subscription: '34aac23e-1b29-4fe3-b0d8-5d8ea2314992'
   az-location: 'westeurope'
   az-location-short: 'WUE'
+  vnet_rg: 'KPMG_network'
   lb_rg: 'KPMG_lb'
   web_rg: 'KPMG_web'
   sql_rg: 'KPMG_sql'

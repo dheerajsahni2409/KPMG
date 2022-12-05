@@ -107,7 +107,7 @@
                 "priority": 200,
                 "access": "Allow",
                 "direction": "Inbound",
-                "sourceAddressPrefixes": "[parameters('sourceAddressPrefixes')]"
+                "sourceAddressPrefix": "*"
               }
             },
             {
