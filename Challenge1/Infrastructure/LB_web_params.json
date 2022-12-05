@@ -1,0 +1,117 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "westeurope"
+        },
+        "lbName": {
+            "value": "KPMG-3tier-LB"
+        },
+        "lbPool1": {
+            "value": "IISPool"
+        },
+        "sku": {
+            "value": "Standard"
+        },
+        "tier": {
+            "value": "Regional"
+        },
+        "subnetId": {
+            "value": "/subscriptions/34aac23e-1b29-4fe3-b0d8-5d8ea2314992/resourceGroups/KPMG_network/providers/Microsoft.Network/virtualNetworks/KPMG_vNET/subnets/subnet_web"
+        },
+        "privateIPAllocationMethod": {
+            "value": "Static"
+        },
+        "opEnvironment": {
+            "value": "KPMG"
+        },
+        "RGName": {
+            "value": "KPMG_web"
+        },
+        "dynaVMName": {
+            "value": "KPMGweb"
+        },
+        "lbPoolInstances": {
+            "value": 1
+        },
+        "dynaVMInstances": {
+            "value": 2
+        },
+        "dynaInstances": {
+            "value": 3
+        },
+        "dynaFrontName1": {
+            "value": "WEB"
+        },
+        "dynaFrontIP1": {
+            "value": "10.0.0.15"
+        },
+        "dynaRule1": {
+            "value": "WebRule443"
+        },
+        "dynaProbePath1": {
+            "value": "/"
+        },
+        "dynaProbeName1": {
+            "value": "WEBProbe443"
+        },
+        "dynaPort1": {
+            "value": 443
+        },
+        "dynaFrontName2": {
+            "value": "API"
+        },
+        "dynaFrontIP2": {
+            "value": "10.0.0.16"
+        },
+        "dynaRule2": {
+            "value": "APIRule444"
+        },
+        "dynaProbePath2": {
+            "value": "/xyz.svc"
+        },
+        "dynaProbeName2": {
+            "value": "APIProbe444"
+        },
+        "dynaPort2": {
+            "value": 444
+        },
+        "dynaFrontName3": {
+            "value": "WEBAPP"
+        },
+        "dynaFrontIP3": {
+            "value": "10.0.0.17"
+        },
+        "dynaRule3": {
+            "value": "WEBAPPRule446"
+        },
+        "dynaProbePath3": {
+            "value": "/Blank.aspx"
+        },
+        "dynaProbeName3": {
+            "value": "WEBAPPProbe446"
+        },
+        "dynaPort3": {
+            "value": 446
+        },
+        "dynaFrontName4": {
+            "value": ""
+        },
+        "dynaFrontIP4": {
+            "value": ""
+        },
+        "dynaRule4": {
+            "value": ""
+        },
+        "dynaProbePath4": {
+            "value": ""
+        },
+        "dynaProbeName4": {
+            "value": ""
+        },
+        "dynaPort4": {
+            "value": 448
+        }
+    }
+}

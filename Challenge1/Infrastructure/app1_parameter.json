@@ -1,0 +1,37 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "tags": {
+        "value": "{ \t\"opEnvironment\": \"KPMG\", \t\"role\": \"APP\", \t\"owner\": \"DHEERAJ\" }"
+      },  
+      "vmNameSuffix": {
+        "value": "app1"
+      },
+      "vmSize": {
+        "value": "Standard_DS1_v2"
+      },
+      "VnetResgroupName": {
+        "value": "KPMG_network"
+      },
+      "virtualNetworkName": {
+        "value": "KPMG_vNET"
+      },
+      "subnetName": {
+        "value": "subnet_app"
+      },
+      "location": {
+        "value": "westeurope"
+      },
+      "adminPassword": {
+        "value": "l0c@lAdm1n!"
+      },
+      "availabilityZone": {
+        "value": ["1"]
+      },
+      "diskEncryptionSetId": {
+        "value": "xyz"
+      }
+    }
+  }
+  

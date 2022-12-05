@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vnetName": {
+      "Value": "KPMG_vNET"
+    },
+    "vnetAddressPrefix": {
+      "Value": "10.0.0.0/24"
+    },
+    "subnet1Prefix": {
+      "Value": "10.0.0.0/27"
+    },
+    "subnet1Name": {
+      "Value": "Subnet_web"
+    },
+    "subnet2Prefix": {
+      "Value": "10.0.0.32/27"
+    },
+    "subnet2Name": {
+      "Value": "Subnet_app"
+    },
+    "subnet3Prefix": {
+      "Value": "10.0.0.64/27"
+    },
+    "subnet3Name": {
+      "Value": "subnet_db"
+    },
+    "subnet4Prefix": {
+      "Value": "10.0.0.96/27"
+    },
+    "subnet4Name": {
+      "Value": "Subnet_jump"
+    },
+    "location": {
+      "defaultValue": "westeurope"
+    }
+  }
+}

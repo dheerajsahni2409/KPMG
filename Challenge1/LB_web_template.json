@@ -1,0 +1,349 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "String",
+            "metadata": {
+                "Description": "Location for resources."
+            }
+        },
+        "lbName": {
+            "type": "String",
+            "metadata": {
+                "Description": "Name of Loadbalancer"
+            }
+        },
+        "lbPool1": {
+            "type": "String",
+            "metadata": {
+                "Description": "Name of Loadbalancer Pool"
+            }
+        },
+        "sku": {
+            "type": "String",
+            "metadata": {
+                "Description": "type of SKU"
+            }
+        },
+        "tier": {
+            "type": "String",
+            "metadata": {
+                "Description": "Type of loadbalancer"
+            }
+        },
+        "subnetId": {
+            "type": "String",
+            "metadata": {
+                "Description": "Id of Subnet."
+            }
+        },
+        "privateIPAllocationMethod": {
+            "type": "String",
+            "metadata": {
+                "Description": "Method of IP allocation"
+            }
+        },
+        "opEnvironment": {
+            "type": "String",
+            "metadata": {
+                "Description": "opEnvironment tag value"
+            }
+        },
+        "RGName": {
+            "type": "String",
+            "metadata": {
+                "Description": "Location for all resources."
+            }
+        },
+        "dynaVMName": {
+            "type": "String",
+            "metadata": {
+                "Description": "Virtual Machine Name to be added to backend address pool"
+            }
+        },
+        "lbPoolInstances": {
+            "type": "int",
+            "metadata": {
+                "Description": "Virtual Machine instances to be added to backend address pool"
+            }
+        },
+        "dynaVMInstances": {
+            "type": "int",
+            "metadata": {
+                "Description": "Virtual Machine instances to be added to backend address pool"
+            }
+        },
+        "dynaInstances": {
+            "type": "int",
+            "metadata": {
+                "Description": "Virtual Machine instances to be added to backend address pool"
+            }
+        },
+        "dynaFrontName1": {
+            "type": "String",
+            "metadata": {
+                "Description": "IIS Frontend IP"
+            }
+        },
+        "dynaFrontIP1": {
+            "type": "String",
+            "metadata": {
+                "Description": "IIS Frontend IP"
+            }
+        },
+        "dynaRule1": {
+            "type": "String",
+            "metadata": {
+                "Description": "Probe Path for IIS"
+            }
+        },
+        "dynaProbeName1": {
+            "type": "String",
+            "metadata": {
+                "Description": "Probe name"
+            }
+        },
+        "dynaProbePath1": {
+            "type": "String",
+            "metadata": {
+                "Description": "Probe Path for IIS"
+            }
+        },
+        "dynaPort1": {
+            "type": "int",
+            "metadata": {
+                "Description": "Probe Path for IIS"
+            }
+        }, 
+        "dynaFrontName2": {
+            "type": "String",
+            "metadata": {
+                "Description": "IIS Frontend IP"
+            }
+        },
+        "dynaFrontIP2": {
+            "type": "String",
+            "metadata": {
+                "Description": "IIS Frontend IP"
+            }
+        },
+        "dynaRule2": {
+            "type": "String",
+            "metadata": {
+                "Description": "Probe Path for IIS"
+            }
+        },
+        "dynaProbeName2": {
+            "type": "String",
+            "metadata": {
+                "Description": "Probe name"
+            }
+        },
+        "dynaProbePath2": {
+            "type": "String",
+            "metadata": {
+                "Description": "Probe Path for IIS"
+            }
+        },
+        "dynaPort2": {
+            "type": "int",
+            "metadata": {
+                "Description": "Probe Path for IIS"
+            }
+        },       
+        "dynaFrontName3": {
+            "type": "String",
+            "metadata": {
+                "Description": "IIS Frontend IP"
+            }
+        },
+        "dynaFrontIP3": {
+            "type": "String",
+            "metadata": {
+                "Description": "IIS Frontend IP"
+            }
+        },
+        "dynaRule3": {
+            "type": "String",
+            "metadata": {
+                "Description": "Probe Path for IIS"
+            }
+        },
+        "dynaProbeName3": {
+            "type": "String",
+            "metadata": {
+                "Description": "Probe name"
+            }
+        },
+        "dynaProbePath3": {
+            "type": "String",
+            "metadata": {
+                "Description": "Probe Path for IIS"
+            }
+        },
+        "dynaPort3": {
+            "type": "int",
+            "metadata": {
+                "Description": "Probe Path for IIS"
+            }
+        },
+        "dynaFrontName4": {
+            "type": "String",
+            "metadata": {
+                "Description": "IIS Frontend IP"
+            }
+        },
+        "dynaFrontIP4": {
+            "type": "String",
+            "metadata": {
+                "Description": "IIS Frontend IP"
+            }
+        },
+        "dynaRule4": {
+            "type": "String",
+            "metadata": {
+                "Description": "Probe Path for IIS"
+            }
+        },
+        "dynaProbeName4": {
+            "type": "String",
+            "metadata": {
+                "Description": "Probe name"
+            }
+        },
+        "dynaProbePath4": {
+            "type": "String",
+            "metadata": {
+                "Description": "Probe Path for IIS"
+            }
+        },
+        "dynaPort4": {
+            "type": "int",
+            "metadata": {
+                "Description": "Probe Path for IIS"
+            }
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/loadBalancers",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('lbName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "tags": {
+                "opEnvironment": "[parameters('opEnvironment')]"
+            },
+            "sku": {
+                "name": "[parameters('sku')]",
+                "tier": "[parameters('tier')]"
+            },
+            "properties": {
+                "copy": [
+                    {
+                        "name": "frontendIPConfigurations",
+                        "count": "[parameters('dynaInstances')]",
+                        "input":  {
+                            "name": "[parameters(concat('dynaFrontName', copyindex('frontendIPConfigurations', 1)))]",
+                            "properties": {
+                                "privateIPAddress": "[parameters(concat('dynaFrontIP', copyindex('frontendIPConfigurations', 1)))]",
+                                "privateIPAllocationMethod": "[parameters('privateIPAllocationMethod')]",
+                                "subnet": {
+                                    "id": "[parameters('subnetId')]"
+                                },
+                                "privateIPAddressVersion": "IPv4"
+                            }
+                        }
+                    },
+                    {
+                        "name": "backendAddressPools",
+                        "count": "[parameters('lbPoolInstances')]",
+                        "input": {
+                            "name": "[parameters(concat('lbpool', copyindex('backendAddressPools', 1)))]",
+                            "properties": {
+                            "loadBalancerBackendAddresses": []
+                            }
+                        }
+                    },
+                    {
+                        "name": "probes",
+                        "count": "[parameters('dynaInstances')]",
+                        "input": {
+                            "name": "[parameters(concat('dynaProbeName', copyindex('probes', 1)))]",
+                            "properties": {
+                                "protocol": "[if(contains(parameters(concat('dynaProbeName', copyindex('probes', 1))), 'SQL' ), 'TCP', 'HTTPS')]",
+                                "requestPath": "[if(contains(parameters(concat('dynaProbeName', copyindex('probes', 1))), 'SQL' ), json('null') , parameters(concat('dynaProbePath', copyindex('probes', 1))))]",
+                                "port": "[parameters(concat('dynaPort', copyindex('probes', 1)))]",
+                                "intervalInSeconds": 25,
+                                "numberOfProbes": 2
+                            }
+                        }
+                    },
+                    {
+                        "name": "loadBalancingRules",
+                        "count": "[parameters('dynaInstances')]",
+                        "input": {
+                            "name": "[parameters(concat('dynaRule', copyindex('loadBalancingRules', 1)))]",
+                            "properties": {
+                                "frontendIPConfiguration": {
+                                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', parameters('lbName')), '/frontendIPConfigurations/', parameters(concat('dynaFrontName', copyindex('loadBalancingRules', 1))))]"
+                                },
+                                "frontendPort": 443,
+                                "backendPort": "[parameters(concat('dynaPort', copyindex('loadBalancingRules', 1)))]",
+                                "enableFloatingIP": false,
+                                "idleTimeoutInMinutes": 4,
+                                "protocol": "Tcp",
+                                "enableTcpReset": true,
+                                "loadDistribution": "SourceIP",
+                                "disableOutboundSnat": true,
+                                "backendAddressPool": {
+                                    "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('lbName'), parameters('lbPool1'))]"
+                                },
+                                "probe": {
+                                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', parameters('lbName')), '/probes/', parameters(concat('dynaProbeName', copyindex('loadBalancingRules', 1))))]"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "inboundNatRules": [],
+                "outboundRules": [],
+                "inboundNatPools": []
+            }
+        },
+        {
+            "apiVersion": "2017-06-01",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[concat(parameters('dynaVMName'), copyindex('nic-loop', 1), '-eth0')]",
+            "location": "[parameters('location')]",
+            "copy": {
+                "name": "nic-loop",
+                "count": "[parameters('dynaVMInstances')]"
+              },
+            "dependsOn": [
+              "[concat('Microsoft.Network/loadBalancers/', parameters('lbName'))]"
+            ],
+            "properties": {
+              "ipConfigurations": [
+                {
+                  "name": "ipconfig1",
+                  "properties": {
+                    "privateIPAllocationMethod": "Dynamic",
+                    "subnet": {
+                      "id": "[parameters('subnetId')]"
+                    },
+                    "loadBalancerBackendAddressPools": [
+                      {
+                        "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('lbName'), parameters('lbPool1'))]"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+        }
+    ]
+}

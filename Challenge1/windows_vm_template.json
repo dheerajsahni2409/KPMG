@@ -1,0 +1,173 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "tags": {
+            "type": "String"
+        },
+        "vmSize": {
+            "type": "String",
+            "metadata": {
+                "Description": "The size of the VM"
+            },
+            "defaultValue": "Standard_DS1_v2"
+        },
+        "vmNameSuffix": {
+            "type": "String",
+            "metadata": {
+                "Description": "Suffix of the VM - max 4 characters"
+            }
+        },
+        "VnetResgroupName": {
+            "type": "String",
+            "metadata": {
+                "Description": "Name of the Vnet Resource group"
+            }
+        },
+        "virtualNetworkName": {
+            "type": "String",
+            "metadata": {
+                "Description": "Name of the Vnet to deploy the VM to"
+            }
+        },
+        "subnetName": {
+            "type": "String",
+            "metadata": {
+                "Description": "Name of the subnet to deploy the VM to"
+            }
+        },
+        "location": {
+            "type": "String",
+            "metadata": {
+                "Description": "Location for all resources."
+            }
+        },
+		"availabilityZone": {
+            "type": "array",
+            "metadata": {
+                "Description": "Availability Zones."
+            }
+		},
+        "adminPassword": {
+            "type": "SecureString",
+            "metadata": {
+                "Description": "Local Administrator Password"
+            }
+        },
+        "diskEncryptionSetId": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "vnetID": "[resourceId(variables('VnetRgName'), 'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+        "subnetRef": "[concat(variables('vnetID'), '/subnets/', parameters('subnetName'))]",
+        "VnetRgName": "[parameters('VnetResgroupName')]",
+        "vmName": "[tolower(concat(resourcegroup().tags['opEnvironment'],parameters('vmNameSuffix')))]",
+        "networkInterfaceName": "[concat(variables('vmName'), '-eth0')]",
+        "dataDisksCount": "[if(contains(parameters('vmNameSuffix'), 'sql'), 3, 1)]",
+        "dataDisksSize1" : "[if(contains(parameters('vmNameSuffix'), 'sql'), 500, 128)]",
+        "dataDisksSize2" : "[200]",
+        "dataDisksSize3" : "[75]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2019-07-01",
+            "name": "[variables('vmName')]",
+            "location": "[parameters('location')]",
+			"zones": "[parameters('availabilityZone')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
+            ],
+            "tags": "[json(parameters('tags'))]",
+            "properties": {
+                "osProfile": {
+                    "computerName": "[variables('vmName')]",
+                    "adminUsername": "localadmin",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": false
+                    },
+                    "allowExtensionOperations": true
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "Publisher": "MicrosoftWindowsServer",
+                        "Offer": "WindowsServer",
+                        "sku": "2016-Datacenter",
+                        "Version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                        },
+                        "diskSizeGB": 127
+                    },
+                    "Copy": [
+                        {
+                            "name": "dataDisks",
+                            "count": "[variables('dataDisksCount')]",
+                            "input":  {
+                                "name": "[concat(variables('vmName'), '-disk0', copyindex('dataDisks', 1))]",
+                                "diskSizeGB": "[variables(concat('dataDisksSize', copyindex('dataDisks', 1)))]",
+                                "lun": "[copyIndex('dataDisks')]",
+                                "createOption": "Empty",
+                                "managedDisk": {
+                                    "storageAccountType": "Premium_LRS"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2017-06-01",
+            "name": "[variables('networkInterfaceName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+        "adminUsername": {
+            "type": "String",
+            "value": "localadmin"
+        },
+        "adminpassword": {
+            "type": "SecureString",
+            "value": "[parameters('adminpassword')]"
+        },
+        "vmName": {
+            "type": "String",
+            "value": "[variables('vmName')]"
+        }
+    }
+}
