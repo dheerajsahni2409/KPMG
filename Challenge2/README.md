@@ -9,6 +9,8 @@ Usage:
 4. Output will be shown in JSON format for readability
 5. Particular key value pair can be retrieved by iterating on $output. 
 Such as "$output.id" gives "/subscriptions/34aac23e-1b29-4fe3-b0d8-5d8ea2314992/resourceGroups/Test_RG/providers/Microsoft.Compute/virtualMachines/Test"
+6. Please use the following command to install Az module if PS is not able to recognize the commands:
+Install-Module -Name Az -Repository PSGallery
 
 Considerations:
 1. Error handling is in place

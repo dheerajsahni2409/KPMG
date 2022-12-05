@@ -107,7 +107,8 @@
                 "priority": 203,
                 "access": "Allow",
                 "direction": "Inbound",
-                "sourceAddressPrefix": "[parameters('jumpAddressPrefixes')]"
+  
+                "sourceAddressPrefix": "*"
               }
           },
           {
