@@ -62,7 +62,7 @@
         "vnetID": "[resourceId(variables('VnetRgName'), 'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
         "subnetRef": "[concat(variables('vnetID'), '/subnets/', parameters('subnetName'))]",
         "VnetRgName": "[parameters('VnetResgroupName')]",
-        "vmName": "[tolower(concat(resourcegroup().tags['opEnvironment'],parameters('vmNameSuffix')))]",
+        "vmName": "[tolower(concat('KPMG',parameters('vmNameSuffix')))]",
         "networkInterfaceName": "[concat(variables('vmName'), '-eth0')]",
         "dataDisksCount": "[if(contains(parameters('vmNameSuffix'), 'sql'), 3, 1)]",
         "dataDisksSize1" : "[if(contains(parameters('vmNameSuffix'), 'sql'), 500, 128)]",

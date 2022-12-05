@@ -32,7 +32,7 @@
     },
     "subnet1Name": {
       "type": "string",
-      "defaultValue": "Subnet1",
+      "defaultValue": "Subnet_web",
       "metadata": {
         "description": "Subnet 1 Name"
       }
@@ -46,7 +46,7 @@
     },
     "subnet2Name": {
       "type": "string",
-      "defaultValue": "Subnet2",
+      "defaultValue": "Subnet_app",
       "metadata": {
         "description": "Subnet 2 Name"
       }
@@ -60,7 +60,7 @@
       },
     "subnet3Name": {
         "type": "string",
-        "defaultValue": "Subnet3",
+        "defaultValue": "Subnet_sql",
         "metadata": {
           "description": "Subnet 3 Name"
       }
@@ -74,7 +74,7 @@
     },
     "subnet4Name": {
       "type": "string",
-      "defaultValue": "Subnet4",
+      "defaultValue": "Subnet_jump",
       "metadata": {
         "description": "Subnet 4 Name"
       }

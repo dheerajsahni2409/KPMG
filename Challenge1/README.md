@@ -15,5 +15,11 @@ Considerations:
 3. ADO pipeline has been written in YAML with staging for infra provisioning for reusability and manageability. 
 4. YAML has been created with proper variables for reusability.
 5. ARM templates have been created with copy functions (looping) for reusability. 
+    a. SQL machines will be provisioned with 4 disks (data, log, temp and OS). The disks are of different sizes as recommended by SQL.
+    b. WFE and APP will be provisioned with 2 disks (data and OS).
+    c. If condition has been used in the ARM to achieve the same from single template. 
+     
+
+
 
 

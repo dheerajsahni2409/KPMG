@@ -9,29 +9,19 @@
       "value": "NSG-jump"
     },
     "port": {
-      "value": [
-        "443"
-      ]
+      "value": ["443"]
     },
     "destinationCIDRs": {
-      "value": [
-        "10.0.0.96/27"
-      ]
+      "value": ["10.0.0.96/27"]
     },
     "completeCIDRs": {
-        "value": [
-            "10.0.0.0/27","10.0.0.32/27","10.0.0.64/27","10.0.0.96/27"
-        ]
+        "value": ["10.0.0.0/27","10.0.0.32/27","10.0.0.64/27","10.0.0.96/27"]
     },
     "sourceAddressPrefixes": { 
-      "value": [
-        "*"
-      ]
+      "value": ["*"]
     },
     "jumpAddressPrefixes": { 
-        "value": [
-          "*"
-        ]
+        "value": ["*"]
       }
   }
 }
